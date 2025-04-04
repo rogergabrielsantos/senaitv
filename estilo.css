@@ -1,0 +1,202 @@
+/* Reset e configurações básicas */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family:  "Montserrat", sans-serif;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Cabeçalho */
+.header {
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 20px 0;
+    padding-left: 10%;
+    text-align: left;
+    width: 100%;
+    z-index: 10;
+    height: 20;
+    border-bottom: 4px solid rgb(255, 0, 0);
+}
+
+.logo {
+    font-size: 2.9rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+.logo span {
+    display: block;
+    font-size: 1.2rem;
+    color: white;
+    margin-top: 5px;
+    float: right;
+    margin-right: 10%;
+    text-align: center;
+}
+
+/* Conteúdo principal */
+.content {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+ 
+}
+
+.gif-container {
+   
+    max-width: 1920px;
+    width: 100%;
+    max-height: 1080px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    margin-left: 5px;
+    margin-left: 5px;
+}
+
+.background-gif {
+    width: 100%;
+    height: 100%;
+    
+    
+}
+
+.text-content {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    margin: 40px auto;
+    max-width: 800px;
+    border-radius: 8px;
+}
+
+h2 {
+    color: #FF5700;
+    margin-bottom: 20px;
+}
+
+.box1{
+    border: 1px solid rgb(255, 0, 0);
+    background-color: rgba(0, 0, 0,0.3);
+    width: 155px;
+    height: 155px;
+    margin-top: 4%;
+    margin-left: 3%;
+    padding-top: 1%;
+    text-align: center;
+    
+}
+
+.box1 span, .box2 span{
+font-size: 50px;
+
+}
+
+.box2{
+    border: 1px solid rgb(255, 0, 0);
+    background-color: rgba(0, 0, 0,0.3);
+    width: 155px;
+    height: 155px;
+    margin-top: 5%;
+    margin-left: 3%;
+    text-align: center;
+    padding-top: 1%;
+    
+}
+
+.box3, .box4{
+    border: 1px solid rgb(255, 0, 0);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0,0.3);
+    width: 155px;
+    height: 155px;
+    margin-top: 5%;
+    margin-left: 3%;
+    color: #dbccc4;
+    
+    display: flex;
+    align-items: center; /* alinhamento vertical */
+    justify-content: center; /* alinhamento horizontal */
+  
+    
+
+}
+a{
+    text-decoration: none;
+}
+
+
+.box3 p, .box4 p{
+    margin-top: 32%;
+    color: #FF5700;
+}
+
+.box5,.box6,.box7{
+    float:right;
+    border: 1px solid rgb(255, 0, 0);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0,0.5);
+    width: 155px;
+    height: 155px;
+    margin-top: 5%;
+    margin-left: 3%;
+    text-align: center;
+    color: #dbccc4;
+    display: flex;
+    align-items: center; /* alinhamento vertical */
+    justify-content: center; /* alinhamento horizontal */
+ }
+ .box6:hover, 
+ .box7:hover, 
+ .box8:hover,
+ .box4:hover,
+ .box5:hover{
+     /* Estilos que serão aplicados quando o mouse passar por cima */
+     background-color: rgba(255,255,255 ,0.4); /* Exemplo: muda a cor de fundo */
+     transform: scale(1.05);   /* Exemplo: efeito de zoom leve */
+     transition: all 0.3s ease; /* Suaviza a transição */
+     color: black;
+ }
+
+.box5{
+    margin-top: -22%;
+    margin-right: 23%;
+}
+.box6{
+    margin-top: -10%;
+    margin-right: 21%;
+}
+.box7{
+    margin-top: 1%;
+    margin-right: 27%;
+}
+
+/* Rodapé */
+.footer {
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 15px 0;
+    text-align: center;
+    width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .logo {
+        font-size: 2rem;
+    }
+    
+    .text-content {
+        padding: 20px;
+        margin: 20px;
+    }
+}
