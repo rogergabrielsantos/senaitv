@@ -22,13 +22,14 @@ body {
     text-align: left;
     width: 100%;
     z-index: 10;
-    height: 20;
+    height: 150px;
     border-bottom: 4px solid rgb(255, 0, 0);
 }
 
 .logo {
     font-size: 2.9rem;
     font-weight: bold;
+    margin-top: 15px;
     color: white;
     text-transform: uppercase;
 }
@@ -97,7 +98,7 @@ h2 {
     
 }
 
-.box1 span, .box2 span{
+.box1 span, .box2 span, .box8 span, .box9 span{
 font-size: 50px;
 
 }
@@ -141,8 +142,8 @@ a{
     color: #FF5700;
 }
 
-.box5,.box6,.box7{
-    float:right;
+.box5,.box6,.box7,.box10,.box11{
+    position:absolute;
     border: 1px solid rgb(255, 0, 0);
     border-radius: 50%;
     background-color: rgba(0, 0, 0,0.5);
@@ -169,16 +170,72 @@ a{
  }
 
 .box5{
-    margin-top: -22%;
-    margin-right: 23%;
+    top: -0%;
+    right: 24%;
 }
 .box6{
-    margin-top: -10%;
-    margin-right: 21%;
+    top: 12%;
+    right: 64%;
 }
 .box7{
-    margin-top: 1%;
-    margin-right: 27%;
+    top: 30%;
+    right: 22%;
+}
+.box10{
+    top: 50%;
+    right: 62%;
+}
+.box11{
+    top: 55%;
+    right: 30%;
+}
+
+
+.box8{
+    border: 1px solid rgb(255, 0, 0);
+    background-color: rgba(0, 0, 0,0.3);
+    width: 155px;
+    height: 155px;
+    float: right;
+    margin-top: -22.5%;
+    margin-right: 2%;
+    padding-top: 1%;
+    text-align: center;
+    
+}
+
+.box9{
+    border: 1px solid rgb(255, 0, 0);
+    background-color: rgba(0, 0, 0,0.3);
+    float: right;
+    width: 155px;
+    height: 155px;
+    margin-top: -10.3%;
+    margin-right: 2%;
+    padding-top: 1%;
+    text-align: center;
+    
+}
+
+.box13 {
+    position: absolute;
+    border: 1px solid rgb(255, 0, 0);
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 330px;
+    height: auto;
+    padding: 15px;
+    top: 13%;
+    right: 39%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 5;
+    border-radius: 8px;
+}
+.box6:hover + .box13, .box13:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(160px) scale(1.05);
 }
 
 /* Rodapé */
