@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAMPUS DATA LUMES - Gráficos</title>
+    <link rel="stylesheet" href="estilo.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+        
+        /* Estilos para a grid de gráficos */
+        .charts-grid {
+
+            position: absolute;
+            top: 1%;
+            left: 10%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 95%;
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 20px;
+          
+            z-index: 2;
+        }
+        
+        .chart-item {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 400px;
+        }
+        
+        .chart-title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: calc(100% - 40px);
+            position: relative;
+        }
+        
+        #loading {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        
+      
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="logo">CAMPUS DATA LUMES<span>Centro de Conectividade<br> Vila Mariana</span></h1>
+    </header>
+    
+    <main class="content">
+        <div class="gif-container">
+            <img src="fundo.gif" alt="Background SENAI" class="background-gif">
+        </div>
+        <div class="box3">
+            <span>
+                <strong>Mais Gráficos</strong>
+            </span>
+        </div>
+        
+        <a href="index.html">
+            <div class="box4">
+                <span>
+                    <strong>Menu Principal</strong>
+                </span>
+            </div>
+        </a>
+        <div id="loading">
+            <h2>Carregando dados...</h2>
+        </div>
+        
+        <div class="charts-grid" style="display: none;">
+            <!-- Gráfico de Linha -->
+            <div class="chart-item">
+                <h2 class="chart-title">Variação Temporal (Linha)</h2>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Gráfico de Barras -->
+            <div class="chart-item">
+                <h2 class="chart-title">Distribuição (Barras)</h2>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Histograma -->
+            <div class="chart-item">
+                <h2 class="chart-title">Distribuição de Frequência</h2>
+                <div class="chart-container">
+                    <canvas id="histogramChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Média Móvel -->
+            <div class="chart-item">
+                <h2 class="chart-title">Média Móvel (7 pontos)</h2>
+                <div class="chart-container">
+                    <canvas id="movingAverageChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Boxes mantidos nas posições fixas -->
+       
+    </main>
+    
+    <footer class="footer">
+        <p>SENAI Vila Mariana - Todos os direitos reservados © 2023</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL da API ThingSpeak
+            const apiUrl = 'https://api.thingspeak.com/channels/399645/fields/1.json?results=10000';
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Esconde o loading
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // Mostra a grid de gráficos
+                    document.querySelector('.charts-grid').style.display = 'grid';
+                    
+                    // Processa os dados
+                    const feeds = data.feeds.filter(feed => feed.field1 !== null);
+                    const labels = feeds.map((feed, index) => {
+                        return feed.created_at ? new Date(feed.created_at).toLocaleTimeString() : index;
+                    });
+                    
+                    const values = feeds.map(feed => parseFloat(feed.field1));
+                    
+                    // Função para calcular média móvel
+                    function calculateMovingAverage(data, windowSize = 7) {
+                        return data.map((val, idx, arr) => {
+                            const start = Math.max(0, idx - windowSize);
+                            const subset = arr.slice(start, idx + 1);
+                            return subset.reduce((a, b) => a + b, 0) / subset.length;
+                        });
+                    }
+                    
+                    // Função para criar histograma
+                    function createHistogramData(data, bins = 10) {
+                        const min = Math.min(...data);
+                        const max = Math.max(...data);
+                        const step = (max - min) / bins;
+                        
+                        const histogram = Array(bins).fill(0);
+                        data.forEach(value => {
+                            let bin = Math.floor((value - min) / step);
+                            bin = Math.min(bin, bins - 1); // Garante que o último bin inclua o valor máximo
+                            histogram[bin]++;
+                        });
+                        
+                        return {
+                            bins: Array.from({length: bins}, (_, i) => (min + (i * step)).toFixed(2)),
+                            counts: histogram
+                        };
+                    }
+                    
+                    const histogramData = createHistogramData(values);
+                    const movingAverages = calculateMovingAverage(values);
+                    
+                    // Cores baseadas no tema
+                    const themeColor = 'rgba(255, 0, 0, 0.7)';
+                    const bgColor = 'rgba(255, 0, 0, 0.2)';
+                    
+                    // Configurações comuns para os gráficos
+                    const commonOptions = {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        family: "'Montserrat', sans-serif"
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleFont: {
+                                    family: "'Montserrat', sans-serif"
+                                },
+                                bodyFont: {
+                                    family: "'Montserrat', sans-serif"
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: "'Montserrat', sans-serif"
+                                    }
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    font: {
+                                        family: "'Montserrat', sans-serif"
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    
+                    // 1. Gráfico de Linha
+                    new Chart(
+                        document.getElementById('lineChart').getContext('2d'),
+                        {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Valor do Sensor',
+                                    data: values,
+                                    borderColor: themeColor,
+                                    backgroundColor: bgColor,
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.1
+                                }]
+                            },
+                            options: commonOptions
+                        }
+                    );
+                    
+                    // 2. Gráfico de Barras (mostrando apenas as primeiras 20 amostras para legibilidade)
+                    new Chart(
+                        document.getElementById('barChart').getContext('2d'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: labels.slice(0, 20),
+                                datasets: [{
+                                    label: 'Valor do Sensor',
+                                    data: values.slice(0, 20),
+                                    backgroundColor: themeColor,
+                                    borderColor: 'rgba(255, 0, 0, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                ...commonOptions,
+                                scales: {
+                                    ...commonOptions.scales,
+                                    x: {
+                                        ...commonOptions.scales.x,
+                                        title: {
+                                            display: true,
+                                            text: 'Amostras',
+                                            font: {
+                                                family: "'Montserrat', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                    
+                    // 3. Histograma
+                    new Chart(
+                        document.getElementById('histogramChart').getContext('2d'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: histogramData.bins,
+                                datasets: [{
+                                    label: 'Frequência',
+                                    data: histogramData.counts,
+                                    backgroundColor: histogramData.bins.map((_, i) => 
+                                        `rgba(255, ${Math.floor(100 - (i * 10))}, ${Math.floor(i * 25)}, 0.7)`
+                                    ),
+                                    borderColor: 'rgba(255, 0, 0, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                ...commonOptions,
+                                scales: {
+                                    ...commonOptions.scales,
+                                    x: {
+                                        ...commonOptions.scales.x,
+                                        title: {
+                                            display: true,
+                                            text: 'Faixa de Valores',
+                                            font: {
+                                                family: "'Montserrat', sans-serif"
+                                            }
+                                        }
+                                    },
+                                    y: {
+                                        ...commonOptions.scales.y,
+                                        title: {
+                                            display: true,
+                                            text: 'Frequência',
+                                            font: {
+                                                family: "'Montserrat', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                    
+                    // 4. Média Móvel
+                    new Chart(
+                        document.getElementById('movingAverageChart').getContext('2d'),
+                        {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Valores Originais',
+                                        data: values,
+                                        borderColor: 'rgba(200, 200, 200, 0.5)',
+                                        backgroundColor: 'rgba(200, 200, 200, 0.1)',
+                                        borderWidth: 1,
+                                        pointRadius: 0
+                                    },
+                                    {
+                                        label: 'Média Móvel (7 pontos)',
+                                        data: movingAverages,
+                                        borderColor: themeColor,
+                                        backgroundColor: bgColor,
+                                        borderWidth: 3,
+                                        fill: false
+                                    }
+                                ]
+                            },
+                            options: commonOptions
+                        }
+                    );
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar dados:', error);
+                    document.getElementById('loading').innerHTML = 
+                        '<h2>Erro ao carregar dados. Por favor, tente novamente mais tarde.</h2>';
+                });
+        });
+    </script>
+</body>
+</html>

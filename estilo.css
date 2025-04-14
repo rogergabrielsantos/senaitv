@@ -10,6 +10,7 @@ body {
     color: white;
     display: flex;
     flex-direction: column;
+    min-width: 1920px;
     min-height: 100vh;
     background-color: rgba(0, 0, 0, 0.9);
 }
@@ -122,9 +123,8 @@ font-size: 50px;
     width: 155px;
     height: 155px;
     margin-top: 5%;
-    margin-left: 3%;
+    margin-left: 2%;
     color: #dbccc4;
-    
     display: flex;
     align-items: center; /* alinhamento vertical */
     justify-content: center; /* alinhamento horizontal */
@@ -256,4 +256,29 @@ a{
         padding: 20px;
         margin: 20px;
     }
+}
+.chart-container {
+    width: 90%;
+    margin-top: -20%;
+    max-height: 500px;
+    max-width: 1500px;
+    margin: 30px auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-title {
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.loading {
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    margin-top: -20px;
 }
