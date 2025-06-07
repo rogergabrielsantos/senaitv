@@ -1,8 +1,8 @@
 // Function to update values
 function updateValues() {
-    // Update population (random between 460 and 489)
+    // Update population (random between 260 and 289)
     const populationElement = document.querySelector('.box1 span');
-    populationElement.textContent = Math.floor(Math.random() * (489 - 460 + 1)) + 460;
+    populationElement.textContent = Math.floor(Math.random() * (289 - 260 + 1)) + 260;
     
     // Update labs in use (random between 12 and 19)
     const labsElement = document.querySelector('.box2 span');
